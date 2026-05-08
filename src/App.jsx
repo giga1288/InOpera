@@ -69,7 +69,7 @@ function LoginScreen({ onLogin }) {
           <p style={{ fontSize: 14, color: C.muted, margin: "0 0 28px" }}>{isTit ? "Entra nella tua area di gestione." : "Inserisci il codice operatore."}</p>
           <div style={{ display: "flex", borderRadius: 12, background: C.surface, padding: 3, marginBottom: 28 }}>
             <button onClick={function() { setMode("titolare"); }} style={{ flex: 1, padding: "10px 0", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", background: mode === "titolare" ? C.card : "transparent", color: mode === "titolare" ? C.acc : C.muted, boxShadow: mode === "titolare" ? "0 1px 4px rgba(0,0,0,.08)" : "none" }}>Titolare</button>
-            <button onClick={function() { setMode("operaio"); }} style={{ flex: 1, padding: "10px 0", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", background: mode === "operaio" ? C.card : "transparent", color: mode === "operaio" ? C.green : C.muted, boxShadow: mode === "operaio" ? "0 1px 4px rgba(0,0,0,.08)" : "none" }}>Operatore</button>
+            <button onClick={function() { setMode("operatore"); }} style={{ flex: 1, padding: "10px 0", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", background: mode === "operatore" ? C.card : "transparent", color: mode === "operatore" ? C.green : C.muted, boxShadow: mode === "operatore" ? "0 1px 4px rgba(0,0,0,.08)" : "none" }}>Operatore</button>
           </div>
           {isTit ? (
             <div>
@@ -141,7 +141,7 @@ function THome({ pend, richieste, lavori, onApprova, onRifiuta, showReq, setShow
                     <div><span style={{ color: C.muted }}>Tipo: </span><strong>{r.tipo}</strong></div>
                     <div><span style={{ color: C.muted }}>Urgenza: </span><strong style={{ color: r.urg === "Alta" ? C.red : C.muted }}>{r.urg}</strong></div>
                     <div><span style={{ color: C.muted }}>Quando: </span><strong>{r.data}</strong></div>
-                    <div><span style={{ color: C.muted }}>Operaio: </span><strong>{r.op}</strong></div>
+                    <div><span style={{ color: C.muted }}>Operatore: </span><strong>{r.op}</strong></div>
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 6 }}>
@@ -369,7 +369,7 @@ function OperatorePhone({ onLogout }) {
     );
   }
 
-  if (tab === "ai") content = <ChatIA context="operaio" />;
+  if (tab === "ai") content = <ChatIA context="operatore" />;
 
   if (tab === "note") {
     content = (
@@ -425,7 +425,7 @@ export default function App() {
   return (
     <div style={{ minHeight: "100vh", background: C.bg, fontFamily: '"DM Sans",system-ui,sans-serif', display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
       <div style={{ textAlign: "center" }}>
-        <OperaioPhone onLogout={function() { setScreen("login"); }} />
+        <OperatorePhone onLogout={function() { setScreen("login"); }} />
         <button onClick={function() { setScreen("login"); }} style={{ marginTop: 16, padding: "8px 20px", borderRadius: 8, border: "1px solid " + C.border, background: C.card, fontSize: 11, color: C.muted, cursor: "pointer" }}>Torna al login</button>
       </div>
     </div>
