@@ -1,4 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+function useOraItaliana() {
+  const [ora, setOra] = useState("");
+  useEffect(function() {
+    function aggiorna() {
+      var now = new Date();
+      var opts = { timeZone: "Europe/Rome", weekday: "short", day: "numeric", month: "short" };
+      var data = now.toLocaleDateString("it-IT", opts);
+      var tempo = now.toLocaleTimeString("it-IT", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit" });
+      setOra(data + " \u00B7 " + tempo);
+    }
+    aggiorna();
+    var timer = setInterval(aggiorna, 30000);
+    return function() { clearInterval(timer); };
+  }, []);
+  return ora;
+}
 
 const C = {
   bg:"#F7F7F4", card:"#FFFFFF", ink:"#1A1A18", muted:"#6B6B65", border:"#E5E3DC", surface:"#EEEEE8",
@@ -49,10 +66,10 @@ function LoginScreen({ onLogin }) {
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 32px" }}>
         <div style={{ width: "100%", maxWidth: 370 }}>
           <h2 style={{ fontSize: 24, fontWeight: 700, margin: "0 0 6px" }}>Accedi</h2>
-          <p style={{ fontSize: 14, color: C.muted, margin: "0 0 28px" }}>{isTit ? "Entra nella tua area di gestione." : "Inserisci il codice operaio."}</p>
+          <p style={{ fontSize: 14, color: C.muted, margin: "0 0 28px" }}>{isTit ? "Entra nella tua area di gestione." : "Inserisci il codice operatore."}</p>
           <div style={{ display: "flex", borderRadius: 12, background: C.surface, padding: 3, marginBottom: 28 }}>
             <button onClick={function() { setMode("titolare"); }} style={{ flex: 1, padding: "10px 0", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", background: mode === "titolare" ? C.card : "transparent", color: mode === "titolare" ? C.acc : C.muted, boxShadow: mode === "titolare" ? "0 1px 4px rgba(0,0,0,.08)" : "none" }}>Titolare</button>
-            <button onClick={function() { setMode("operaio"); }} style={{ flex: 1, padding: "10px 0", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", background: mode === "operaio" ? C.card : "transparent", color: mode === "operaio" ? C.green : C.muted, boxShadow: mode === "operaio" ? "0 1px 4px rgba(0,0,0,.08)" : "none" }}>Operaio</button>
+            <button onClick={function() { setMode("operaio"); }} style={{ flex: 1, padding: "10px 0", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", background: mode === "operaio" ? C.card : "transparent", color: mode === "operaio" ? C.green : C.muted, boxShadow: mode === "operaio" ? "0 1px 4px rgba(0,0,0,.08)" : "none" }}>Operatore</button>
           </div>
           {isTit ? (
             <div>
@@ -84,7 +101,7 @@ function THome({ pend, richieste, lavori, onApprova, onRifiuta, showReq, setShow
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginBottom: 12 }}>
         <div style={{ background: C.card, border: "1px solid " + C.border, borderRadius: 10, padding: 10 }}><div style={{ fontSize: 10, color: C.muted, marginBottom: 4 }}>Settimana</div><div style={{ fontSize: 20, fontWeight: 700 }}>12</div></div>
         <div style={{ background: C.card, border: "1px solid " + C.border, borderRadius: 10, padding: 10 }}><div style={{ fontSize: 10, color: C.muted, marginBottom: 4 }}>Completati</div><div style={{ fontSize: 20, fontWeight: 700, color: C.green }}>4</div></div>
-        <div style={{ background: C.card, border: "1px solid " + C.border, borderRadius: 10, padding: 10 }}><div style={{ fontSize: 10, color: C.muted, marginBottom: 4 }}>Operai</div><div style={{ fontSize: 20, fontWeight: 700, color: C.blue }}>2/3</div></div>
+        <div style={{ background: C.card, border: "1px solid " + C.border, borderRadius: 10, padding: 10 }}><div style={{ fontSize: 10, color: C.muted, marginBottom: 4 }}>Operatori</div><div style={{ fontSize: 20, fontWeight: 700, color: C.blue }}>2/3</div></div>
       </div>
 
       {pend > 0 ? (
@@ -174,7 +191,7 @@ function TClienti() {
 
 function TTeam() {
   var tm = [{n:"Luca Verdi",s:"Idraulica",c:"OP-7842",o:2,a:true},{n:"Marco Neri",s:"Elettricista",c:"OP-3156",o:1,a:true},{n:"Paolo Galli",s:"Generico",c:"OP-9901",o:0,a:false}];
-  return <div><button style={{ width: "100%", padding: 8, borderRadius: 8, border: "none", background: C.pri, color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer", marginBottom: 10 }}>+ Nuovo operaio</button>{tm.map(function(t,i) { return <div key={i} style={{ background: C.card, border: "1px solid " + C.border, borderRadius: 10, padding: "10px 12px", marginBottom: 6, display: "flex", alignItems: "center", gap: 10 }}><div style={{ width: 34, height: 34, borderRadius: "50%", background: t.a ? C.greenSoft : C.surface, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 12, color: t.a ? C.green : C.muted }}>{ini(t.n)}</div><div style={{ flex: 1 }}><div style={{ fontSize: 13, fontWeight: 600 }}>{t.n}</div><div style={{ fontSize: 10, color: C.muted }}>{t.s + " \u00B7 " + t.c}</div></div><PillTag label={t.a ? t.o + " oggi" : "Libero"} color={t.a ? C.green : C.muted} bg={t.a ? C.greenSoft : C.surface} /></div>; })}</div>;
+  return <div><button style={{ width: "100%", padding: 8, borderRadius: 8, border: "none", background: C.pri, color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer", marginBottom: 10 }}>+ Nuovo operatore</button>{tm.map(function(t,i) { return <div key={i} style={{ background: C.card, border: "1px solid " + C.border, borderRadius: 10, padding: "10px 12px", marginBottom: 6, display: "flex", alignItems: "center", gap: 10 }}><div style={{ width: 34, height: 34, borderRadius: "50%", background: t.a ? C.greenSoft : C.surface, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 12, color: t.a ? C.green : C.muted }}>{ini(t.n)}</div><div style={{ flex: 1 }}><div style={{ fontSize: 13, fontWeight: 600 }}>{t.n}</div><div style={{ fontSize: 10, color: C.muted }}>{t.s + " \u00B7 " + t.c}</div></div><PillTag label={t.a ? t.o + " oggi" : "Libero"} color={t.a ? C.green : C.muted} bg={t.a ? C.greenSoft : C.surface} /></div>; })}</div>;
 }
 
 function ChatIA({ context }) {
@@ -219,6 +236,7 @@ function ChatIA({ context }) {
 function TitolarePhone({ onLogout }) {
   const [tab, setTab] = useState("home");
   const [showReq, setShowReq] = useState(false);
+  var oraLive = useOraItaliana();
   const [richieste, setRichieste] = useState([
     { id: "r1", ch: "WhatsApp", t: "10 min fa", nome: "Fabio Moretti", ind: "Via Nazionale 18, Teramo", msg: "Ho una perdita sotto il lavandino. Potete venire?", tipo: "Riparazione perdita", urg: "Alta", data: "Oggi 16:00", op: "Luca Verdi", st: "pending" },
     { id: "r2", ch: "Chiamata", t: "35 min fa", nome: "Carla Gentili", ind: "Corso San Giorgio 22, Teramo", msg: "Salta la corrente quando accendo il forno.", tipo: "Verifica elettrica", urg: "Normale", data: "Mer 9 apr 10:00", op: "Marco Neri", st: "pending" },
@@ -254,7 +272,7 @@ function TitolarePhone({ onLogout }) {
       <div style={{ height: 24, background: "#1A1A18", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><div style={{ width: 70, height: 4, borderRadius: 2, background: "#333" }} /></div>
       <div style={{ background: C.card, borderBottom: "1px solid " + C.border, padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
         <div style={{ width: 28, height: 28, borderRadius: 8, background: C.pri, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 800 }}>iO</div>
-        <span style={{ fontSize: 11, color: C.muted }}>Lun 7 apr \u00B7 14:32</span>
+        <span style={{ fontSize: 11, color: C.muted }}>{oraLive}</span>
       </div>
       <div style={{ flex: 1, padding: "10px 12px", overflowY: "auto" }}>{content}</div>
       <div style={{ background: C.card, borderTop: "1px solid " + C.border, display: "flex", padding: "5px 0 10px", flexShrink: 0 }}>
@@ -269,12 +287,13 @@ function TitolarePhone({ onLogout }) {
 }
 
 /* ═══════════════════════════
-   OPERAIO PHONE
+   OPERATORE PHONE
    ═══════════════════════════ */
-function OperaioPhone({ onLogout }) {
+function OperatorePhone({ onLogout }) {
   const [tab, setTab] = useState("agenda");
   const [notes, setNotes] = useState(["Tubo sotto lavandino corroso", "Cliente chiede preventivo cucina"]);
   const [noteVal, setNoteVal] = useState("");
+  var oraLive = useOraItaliana();
 
   var lavori = [
     { id: 1, cl: "Marco Bianchi", tel: "3391234567", ind: "Via Nazionale 42, Teramo", tipo: "Ristrutturazione bagno", st: "in_corso", ora: "08:30", prog: 65, mat: ["Piastrelle 60x60", "Colla Mapei", "Stucco"], note: "Piano terra, citofono rotto" },
